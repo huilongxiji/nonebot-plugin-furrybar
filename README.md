@@ -11,8 +11,8 @@
 _✨ furrybar API  对接插件 ✨_
 
 </a>
-<a href="https://github.com/Ekac00/nonebot-plugin-furrybar/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/Ekac00/nonebot-plugin-furrybar.svg" alt="license">
+<a href="https://github.com/huilongxiji/nonebot-plugin-furrybar/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/huilongxiji/nonebot-plugin-furrybar.svg" alt="license">
 </a>
 <a href="https://pypi.python.org/pypi/nonebot-plugin-furrybar">
     <img src="https://img.shields.io/pypi/v/nonebot-plugin-furrybar.svg" alt="pypi">
