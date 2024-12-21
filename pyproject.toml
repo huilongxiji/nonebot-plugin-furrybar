@@ -1,0 +1,18 @@
+[project]
+name = "nonebot-plugin-furrybar"
+version = "1.1.0"
+authors = [
+  { name = "huilongxiji", email = "2601515849@qq.com" },
+]
+dependencies = ["nonebot2", "httpx"]
+description = "基于NoneBot2进行适配的ai对话插件"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "GPL-3.0 license"}
+
+[tool.pdm]
+distribution = false
+
+[project.urls]
+"Homepage" = "https://github.com/huilongxiji"
+"Bug Tracker" = "https://github.com/huilongxiji/nonebot-plugin-furrybar/issues"
