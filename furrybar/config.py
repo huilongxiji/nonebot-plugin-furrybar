@@ -11,7 +11,7 @@ class Config(BaseModel, extra=Extra.ignore):
     superusers: list = []
 
     # 插件版本号勿动！！！！
-    furrybar_version: Optional[str] = "1.1.0"
+    furrybar_version: Optional[str] = "1.4.0"
 
     # 这里是bot默认状态，请选择True或者False，本模块默认开启
     bot_kg: Optional[bool] = True
