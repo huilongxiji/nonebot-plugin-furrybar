@@ -1,6 +1,6 @@
 [project]
 name = "nonebot-plugin-furrybar"
-version = "1.1.0"
+version = "1.2.0"
 authors = [
   { name = "huilongxiji", email = "2601515849@qq.com" },
 ]
