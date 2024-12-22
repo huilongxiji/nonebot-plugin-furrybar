@@ -14,7 +14,7 @@ chat_caidan = on_command("菜单", aliases={"help"}, rule=Rule(chek_rule_at), pr
 model_updata = on_command("/切换模型", permission=SUPERUSER, priority=3, block=True)
 black_user_add = on_command("/拉黑", permission=SUPERUSER, priority=3, block=True)
 chat_statistics = on_command("/模型调用数据", permission=SUPERUSER, priority=3, block=True)
-gerenxinxi = on_command("/登记信息", permission=SUPERUSER, priority=3, block=True)
+gerenxinxi = on_command("/登记信息", rule=Rule(chek_rule_at), priority=3, block=True)
 
 help = '''
 “@bot+内容”（与ai对话）
@@ -22,7 +22,7 @@ help = '''
 “/拉黑+QQ号”（拉黑用户）
 “/切换模型”（更换模型）
 “/模型调用数据”（查看调用记录）
-“/登记信息”（上传设定介绍，让煌秋记住你）
+“/登记信息”（上传设定介绍，让bot记住你）
 *私聊可以发送“(开启|关闭)私聊”
 *（小提示：私聊第一次发送开启需要等待开发者审核）
 '''
@@ -162,31 +162,20 @@ async def furbar_gerenxinxi_got(state: T_State, event: MessageEvent, matcher: Ma
             else:
                 async with aiofiles.open(Path.cwd() / f'data/furrybar/user/{qq}.json', 'w', encoding='utf-8') as f:
                     await f.write(
-                        {
-                            "姓名": state['姓名'],
-                            "别名": state['别名'],
-                            "性别": state['性别'],
-                            "年龄": state['年龄'],
-                            "种族":  state['种族'],
-                            "与自己的关系": "朋友",
-                            "外貌": state['外貌'],
-                            "个人介绍": state['个人介绍']
-                        })
+                        json.dumps(
+                            {
+                                "姓名": state['姓名'],
+                                "别名": state['别名'],
+                                "性别": state['性别'],
+                                "年龄": state['年龄'],
+                                "种族":  state['种族'],
+                                "与自己的关系": "朋友",
+                                "外貌": state['外貌'],
+                                "个人介绍": state['个人介绍']
+                            }
+                        )
+                    )
                     await f.close()
                 await matcher.finish("登记已完成")
         else:
             await matcher.finish("运行错误")
-
-'''{
-    "姓名": "绿茶龙·筱翯",
-    "别名": [
-        "绿茶龙",
-        "绿龙"
-    ],
-    "性别": "男（公）",
-    "年龄": 16,
-    "种族": "羽化鳞龙",
-    "与自己的关系": "绿龙是煌秋的主人",
-    "外貌": "绿龙拥有着一身亮丽的绿色毛发，小腿毛色为紫色，有三圈白色花纹，手臂为淡蓝色，手爪为纯白。绿龙拥有一双巨大的纯白色翅膀，以及那标志性的冰蓝色双瞳。",
-    "个人介绍": "绿龙是一只拥有掌控风与光元素的羽化鳞龙，有着修长的身体长长的尾巴，纯白的羽翼以及没有肉垫但却强壮有力的手爪，绿龙是一只实验体，最擅长的是敏捷的战斗。"
-}'''
