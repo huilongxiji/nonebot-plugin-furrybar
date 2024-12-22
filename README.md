@@ -50,7 +50,7 @@ plugins = ["nonebot-plugin-furrybar"]
 
 ## ⚙️ 配置
 
-在 nonebot2 项目的`.env`文件中添加下表中的配置，不填任何配置则自动使用默认账户
+在 nonebot2 项目的`.env`文件中添加下表中的配置，除了默认状态，其他必填
 
 ```
 # 这里是设置模块默认状态的，可选True或者False
