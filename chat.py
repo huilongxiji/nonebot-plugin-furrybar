@@ -246,8 +246,8 @@ async def chek_rule_at(event:MessageEvent):
 ## ============================================开关与基础功能============================================
 
 
-on_group = on_command('/chat on', permission=SUPERUSER|GROUP_ADMIN|GROUP_OWNER, priority=3, block=True)
-off_group = on_command('/chat off', permission=SUPERUSER|GROUP_ADMIN|GROUP_OWNER, priority=3, block=True)
+on_group = on_command('/ai on', permission=SUPERUSER|GROUP_ADMIN|GROUP_OWNER, priority=3, block=True)
+off_group = on_command('/ai off', permission=SUPERUSER|GROUP_ADMIN|GROUP_OWNER, priority=3, block=True)
 
 @on_group.handle()
 async def handle_on_group(event: GroupMessageEvent):
@@ -288,7 +288,7 @@ async def handle_off_group(event: GroupMessageEvent):
     else:
         await off_group.finish("当前群聊未启用")
 
-black_add = on_command("/chat拉黑", permission=SUPERUSER, priority=3, block=True)
+black_add = on_command("/拉黑", permission=SUPERUSER, priority=3, block=True)
 
 @black_add.handle()
 async def handle_black_add(args: Message = CommandArg()):
