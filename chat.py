@@ -325,6 +325,8 @@ balance = on_command("/账户余额查询", permission=SUPERUSER, priority=3, bl
 
 @balance.handle()
 async def handle_balance():
+    if chat_config.api_url != "https://api.deepseek.com":
+        await balance.finish("该功能仅限 deepseek API 使用")
     data = httpx.get(
         url = chat_config.api_url + "/user/balance",
         headers = {
