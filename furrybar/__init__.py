@@ -87,7 +87,7 @@ async def userlist_sq_(bot: Bot, args: Message = CommandArg()):
 
 # 检查更新
 def check_update():
-    new_verision, time = update_syj()
+    new_verision, time = update_furrybar()
     if not new_verision and not time:
         logger.error(f"furrybar:无法获取最新的版本，当前版本为{config.furrybar_version}，可能已经过时！")
     else:
@@ -107,8 +107,8 @@ def check_update():
                 logger.success(f"furrybar:更新完成！最新版本为{new_verision}|当前使用版本为{config.furrybar_version}")
                 logger.warning(f"furrybar:你可能需要重新启动nonebot来完成插件的重载")
 
-#update-----syj
-def update_syj():
+#update-----furrybar
+def update_furrybar():
     fails = 0
     while True:
         try:
@@ -131,10 +131,7 @@ def update_syj():
             break
     return verision,time
 
-
 try:
     check_update()
 except Exception as e:
     logger.opt(colors=True).error(f"检测更新失败！！{e}")
-
-

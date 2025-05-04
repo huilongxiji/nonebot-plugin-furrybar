@@ -172,7 +172,9 @@ async def furbar_gerenxinxi_got(state: T_State, event: MessageEvent, matcher: Ma
                                 "与自己的关系": "朋友",
                                 "外貌": state['外貌'],
                                 "个人介绍": state['个人介绍']
-                            }
+                            },
+                            indent=4,
+                            ensure_ascii=False
                         )
                     )
                     await f.close()
