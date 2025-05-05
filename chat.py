@@ -14,7 +14,8 @@ from nonebot.params import CommandArg
 from nonebot.adapters import Message
 from nonebot.rule import to_me,Rule
 from nonebot.log import logger
-from typing import Literal, Optional
+from typing import Any, Literal, Optional
+from nonebot import get_driver
 from pathlib import Path
 from datetime import *
 import aiofiles
@@ -29,7 +30,11 @@ import nonebot
 from openai import OpenAI
 import openai
 
+import aiosqlite
 import sqlite3
+
+# 全局连接池变量
+_db_conn: Optional[aiosqlite.Connection] = None
 
 # ============Config=============
 class Config(BaseModel, extra=Extra.ignore):
@@ -152,6 +157,23 @@ for path in [user_chat_data, user_ziliao_data]:
         logger.opt(colors=True).success("文件夹缺失，自动初始化Loading……")
         os.makedirs(path)
 
+async def init_db():
+    """启动时连接数据库"""
+    global _db_conn
+    _db_conn = await aiosqlite.connect(DB_PATH)
+    # 可选优化：设置连接池参数
+    await _db_conn.execute("PRAGMA journal_mode=WAL")  # 提高并发读写性能
+
+async def close_db():
+    """关闭时释放连接"""
+    if _db_conn:
+        await _db_conn.close()
+
+# 注册到 NoneBot 生命周期
+driver = get_driver()
+driver.on_startup(init_db)
+driver.on_shutdown(close_db)
+
 async def keyword_():
     """载入全局知识"""
     if not os.path.exists(knowledge_path):
@@ -187,6 +209,32 @@ def update_grouplist(group_id: str, status: bool):
     conn.close()
     logger.success(f"群聊 {group_id} 的状态已更新为 {status}")
 
+async def safe_query(sql: str, params: Optional[tuple] = None) -> Any:
+    """安全执行SQL查询，自动处理连接失效"""
+    global _db_conn
+    
+    try:
+        cursor = await _db_conn.cursor()
+        await cursor.execute(sql, params or ())
+        return await cursor.fetchall()  # 根据需求选择 fetchone/fetchmany
+    
+    except (aiosqlite.Error, AttributeError) as e:
+        # 连接失效或未初始化
+        print(f"数据库错误: {e}, 尝试重新连接...")
+        
+        # 关闭旧连接（如果存在）
+        if _db_conn:
+            await _db_conn.close()
+        
+        # 重新连接
+        _db_conn = await aiosqlite.connect(DB_PATH)
+        await _db_conn.execute("PRAGMA journal_mode=WAL")
+        
+        # 重试查询
+        cursor = await _db_conn.cursor()
+        await cursor.execute(sql, params or ())
+        return await cursor.fetchall()
+
 async def chek_rule_at(event:MessageEvent):
 
     atid = event.get_message()['at']
@@ -202,9 +250,8 @@ async def chek_rule_at(event:MessageEvent):
 
     user_id = str(event.user_id)
     try:
-        conn = sqlite3.connect(DB_PATH)
-        cursor = conn.cursor()
-        config = cursor.execute("SELECT * FROM chat_config").fetchone()
+        configs = await safe_query("SELECT * FROM chat_config")
+        config = configs[0]  # 获取第一行配置
 
         if config is None:
             logger.error("数据库配置表不存在")
@@ -234,8 +281,8 @@ async def chek_rule_at(event:MessageEvent):
         else:
             return False        # 未知消息类型或未知来源触发
         
-    except Exception:
-        logger.opt(colors=True).success("权限组判断错误！！！")
+    except Exception as e:
+        logger.opt(colors=True).success(f"权限组判断错误！！！\n{e}")
         return False
     
     finally:
